@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { configValidationSchema } from './config/config.validation';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { UsersModule } from './users/users.module';
     }),
 
     UsersModule,
+
+    TokensModule,
   ],
   controllers: [AppController],
   providers: [AppService],
