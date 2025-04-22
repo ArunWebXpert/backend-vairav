@@ -1,0 +1,12 @@
+services:
+  app:
+    image: backend
+    container_name: backend
+    ports:
+      - '8080:8080'
+    env_file:
+      - .env
+
+volumes:
+  db-data:
+    driver: local
