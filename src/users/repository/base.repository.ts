@@ -1,5 +1,5 @@
-import { DEFAULT_LIMIT, DEFAULT_PAGE } from '@constants/general.constants';
 import { ClientSession, PipelineStage } from 'mongoose';
+import { DEFAULT_LIMIT, DEFAULT_PAGE } from '@constants/general.constants';
 
 export class BaseRepository {
   private readonly collectionName;
