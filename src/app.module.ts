@@ -6,6 +6,7 @@ import { configValidationSchema } from './config/config.validation';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from './users/users.module';
 import { TokensModule } from './tokens/tokens.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -36,6 +37,8 @@ import { TokensModule } from './tokens/tokens.module';
     UsersModule,
 
     TokensModule,
+
+    LogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
