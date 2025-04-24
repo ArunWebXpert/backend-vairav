@@ -15,4 +15,10 @@ export const configValidationSchema = Joi.object({
   DB_OPTIONS: Joi.string().required().trim(),
   DB_PASSWORD: Joi.string().required().trim(),
   DB_USERNAME: Joi.string().required().trim(),
+
+  // tokens
+  JWT_ACCESS_TOKEN_SECRET: Joi.string().required(),
+  JWT_ACCESS_TOKEN_EXPIRES_IN: Joi.string().default('10m'),
+  JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
+  JWT_REFRESH_TOKEN_EXPIRES_IN: Joi.string().default('7d'),
 });
