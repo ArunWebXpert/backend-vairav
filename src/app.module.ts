@@ -4,6 +4,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { configValidationSchema } from './config/config.validation';
 import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './users/users.module';
+import { TokensModule } from './tokens/tokens.module';
+import { LogsModule } from './logs/logs.module';
 
 @Module({
   imports: [
@@ -30,6 +33,12 @@ import { MongooseModule } from '@nestjs/mongoose';
 
       inject: [ConfigService],
     }),
+
+    UsersModule,
+
+    TokensModule,
+
+    LogsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
