@@ -15,7 +15,7 @@ export class TokenService {
     const accessToken = this.jwtService.sign(payload);
 
     return {
-      accessToken,
+      token: accessToken,
       ttl: this.configService.get('JWT_ACCESS_TOKEN_EXPIRES_IN'),
     };
   }
@@ -27,7 +27,7 @@ export class TokenService {
     });
 
     return {
-      refreshToken,
+      token: refreshToken,
       ttl: this.configService.get('JWT_REFRESH_TOKEN_EXPIRES_IN'),
     };
   }
