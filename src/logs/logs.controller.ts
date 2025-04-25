@@ -1,10 +1,14 @@
 import { Controller, Get, Post } from '@nestjs/common';
 import { LogsService } from './service/logs.service';
 import { ROLE } from '@constants/enum/role.enum';
+import { SeedService } from './service/seed.service';
 
 @Controller('logs')
 export class LogsController {
-  constructor(private readonly logsService: LogsService) {}
+  constructor(
+    private readonly logsService: LogsService,
+    private readonly seedService: SeedService,
+  ) {}
 
   @Post('seed')
   async seedDB() {
