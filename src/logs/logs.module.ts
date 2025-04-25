@@ -4,6 +4,7 @@ import { LogsRepository } from './repository/logs.repository';
 import { LogsService } from './service/logs.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { LogsStatService } from './service/logs-stat.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { MongooseModule } from '@nestjs/mongoose';
       },
     ]),
   ],
-  providers: [LogsService, LogsRepository],
+  providers: [LogsService, LogsRepository, LogsStatService],
   controllers: [LogsController],
 })
 export class LogsModule {}
