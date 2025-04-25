@@ -1,10 +1,10 @@
 import { Logs, LogsSchema } from './entities/logs.entity';
-import { LogsController } from './logs.controller';
 import { LogsRepository } from './repository/logs.repository';
 import { LogsService } from './service/logs.service';
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { LogsStatService } from './service/logs-stat.service';
+import { LogsController } from './logs.controller';
+import { SeedService } from './service/seed.service';
 
 @Module({
   imports: [
@@ -15,7 +15,7 @@ import { LogsStatService } from './service/logs-stat.service';
       },
     ]),
   ],
-  providers: [LogsService, LogsRepository, LogsStatService],
+  providers: [LogsService, LogsRepository, SeedService],
   controllers: [LogsController],
 })
 export class LogsModule {}
