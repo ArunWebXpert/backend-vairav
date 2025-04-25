@@ -6,7 +6,6 @@ import mongoose from 'mongoose';
 import * as readline from 'readline';
 import { Logs } from '../entities/logs.entity';
 import { LogsRepository } from '../repository/logs.repository';
-import dayjs from 'dayjs';
 
 @Injectable()
 export class LogsService {
@@ -222,7 +221,7 @@ export class LogsService {
       .split('\n')
       .filter((line) => line);
     let batch: Logs[] = [];
-    const batchSize = 100;
+    const batchSize = 1000;
 
     for (const error of errorLines) {
       const { line, source } = JSON.parse(error);
@@ -258,7 +257,7 @@ export class LogsService {
       }
 
       await this.processLogFile(apacheLogFile, 'apache');
-      //   await this.processLogFile(nginxLogFile, 'nginx');
+      await this.processLogFile(nginxLogFile, 'nginx');
       await this.retryFailedLogs();
 
       this.logger.log('All logs processed successfully');
