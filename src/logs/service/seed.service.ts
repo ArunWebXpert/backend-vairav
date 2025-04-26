@@ -1,9 +1,15 @@
+import Lang from '@constants/language';
+import {
+  Injectable,
+  Logger,
+  UnprocessableEntityException,
+} from '@nestjs/common';
+import { InjectConnection } from '@nestjs/mongoose';
 import * as fs from 'fs';
 import * as maxmind from 'maxmind';
-import * as readline from 'readline';
 import mongoose from 'mongoose';
-import { InjectConnection } from '@nestjs/mongoose';
-import { Injectable, Logger } from '@nestjs/common';
+import * as readline from 'readline';
+import { convertToTimestamp } from 'src/utils/date.utils';
 import { Logs } from '../entities/logs.entity';
 import { LogsRepository } from '../repository/logs.repository';
 
@@ -93,10 +99,12 @@ export class SeedService {
         },
       };
 
-      return {
+      console.log('here');
+
+      const obj = {
         ip: ip ?? '',
         // timestamp: new Date(match[4]),
-        timestamp: match[4] ?? '',
+        timestamp: convertToTimestamp(match[4]).toDate(),
 
         method: match[5] ?? '',
         url: match[6] ?? '',
@@ -109,27 +117,9 @@ export class SeedService {
         address,
       };
 
-      //   return {
-      //     ip: '130.89.1.236',
-      //     timestamp: '23/May/2015:13:05:14 +0000',
-      //     method: 'GET',
-      //     url: '/downloads/product_2',
-      //     protocol: 'HTTP/1.1',
-      //     statusCode: 404,
-      //     bytes: 336,
-      //     referer: '',
-      //     userAgent: 'Debian APT-HTTP/1.3 (1.0.1ubuntu2)',
-      //     source: 'nginx',
-      //     address: {
-      //       country: 'Nepal',
-      //       region: 'Kathmandu',
-      //       city: 'Pharping',
-      //       location: {
-      //         type: 'Point',
-      //         coordinates: [85.324, 27.7172],
-      //       },
-      //     },
-      //   };
+      console.log({ obj });
+
+      return obj;
     } catch (err) {
       fs.appendFileSync(
         this.errorLogFile,
@@ -152,6 +142,7 @@ export class SeedService {
     for await (const line of rl) {
       const parsed = this.parseLogLine(line, source);
 
+      console.log({ parsed });
       if (parsed) {
         batch.push(parsed);
       }
@@ -237,6 +228,13 @@ export class SeedService {
 
   //   main seed  function
   async processLogs() {
+    // find logs
+    const logsCount = await this.logsRepository.countDocuments();
+
+    if (logsCount > 0) {
+      throw new UnprocessableEntityException(Lang.CLEAN_DB_BEFORE_SEEDING);
+    }
+
     const apacheLogFile = 'src/logs/log-files/apache_logs.txt';
     const nginxLogFile = 'src/logs/log-files/nginx_logs.txt';
 

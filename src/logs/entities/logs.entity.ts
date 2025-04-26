@@ -43,8 +43,8 @@ export class Logs {
   @Prop({ type: String, default: '' })
   ip: string;
 
-  @Prop({ type: String })
-  timestamp: string;
+  @Prop({ type: Date, nullable: true })
+  timestamp: Date | null;
 
   @Prop({ type: String, default: '' })
   method: string;
