@@ -1,4 +1,5 @@
 interface ResponseMessages {
+  readonly CLEAN_DB_BEFORE_SEEDING: string;
   readonly API_HIT_ERROR: string;
   readonly DATA_FETCH_ERROR: string;
   readonly INVALID_CREDENTIALS: string;
@@ -12,6 +13,7 @@ interface ResponseMessages {
 const responseMessages = {
   EN: {
     API_HIT_ERROR: 'Web hose api hit failed.',
+    CLEAN_DB_BEFORE_SEEDING: 'Clean DB before seeding.',
     DATA_FETCH_ERROR: 'Error fetching data.',
     INVALID_CREDENTIALS: 'Invalid credentials.',
     INVALID_SIGNATURE: 'Invalid signature.',
