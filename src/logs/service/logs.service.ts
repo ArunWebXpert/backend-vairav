@@ -1,12 +1,12 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
-import { IRole } from './../interface/role.interface';
-import { LogTableDataInput } from '../dto/input/log-table-data.input';
-import { LogsRepository } from '../repository/logs.repository';
 import { ROLE } from '@constants/enum/role.enum';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as dayjs from 'dayjs';
 import { getSourceFilter } from 'src/utils/source-filter.utils';
-import { TotalEventsResponse } from '../dto/response/total-events.response';
+import { LogTableDataInput } from '../dto/input/log-table-data.input';
 import { ActiveIPResponse } from '../dto/response/active-ip.response';
+import { TotalEventsResponse } from '../dto/response/total-events.response';
+import { LogsRepository } from '../repository/logs.repository';
+import { IRole } from './../interface/role.interface';
 
 @Injectable()
 export class LogsService {
@@ -96,6 +96,11 @@ export class LogsService {
   async mostCommonResponseSize({ role }: IRole) {
     const match = getSourceFilter(role);
 
+    // status code of only success messages
+    match.statusCode = {
+      $in: [200, 201, 202, 203, 204, 205, 206, 207, 208, 226],
+    };
+
     const [commonBytes] = await this.logsRepository.aggregate([
       { $match: match },
       {
@@ -167,6 +172,7 @@ export class LogsService {
           },
         },
         { $sort: { _id: -1 } },
+        { $limit: 6 },
         {
           $project: {
             _id: 0,
@@ -187,7 +193,7 @@ export class LogsService {
     role,
     page,
     limit,
-  }: LogTableDataInput & IRole): Promise<void> {
+  }: LogTableDataInput & IRole) {
     // check if start date is greater than end date
     if (startDate && endDate && dayjs(startDate).isAfter(dayjs(endDate))) {
       throw new BadRequestException('Start date cannot be after end date.');
@@ -246,5 +252,52 @@ export class LogsService {
     );
 
     return res;
+  }
+
+  // get all stat data in on place
+  async getStat({ role }: IRole) {
+    const timeout = <T>(promise: Promise<T>, ms: number): Promise<T> =>
+      Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+          setTimeout(() => reject(new Error('Query timeout')), ms),
+        ),
+      ]);
+
+    const maxQueryTime = 1000; //ms
+
+    const [
+      totalEvents,
+      commonIP,
+      commonMethod,
+      statusCode,
+      commonBytes,
+      topUserAgent,
+    ] = await Promise.allSettled([
+      timeout(this.getTotalEvents({ role }), maxQueryTime),
+      timeout(this.getMostActiveIpAddress({ role }), maxQueryTime),
+      timeout(this.getMostCommonMethod({ role }), maxQueryTime),
+      timeout(this.getTopHttpStatusCode({ role }), maxQueryTime),
+      timeout(this.mostCommonResponseSize({ role }), maxQueryTime),
+      timeout(this.getTopUserAgent({ role }), maxQueryTime),
+    ]);
+
+    const response = {
+      totalEvents:
+        totalEvents.status === 'fulfilled'
+          ? totalEvents.value.totalEvents
+          : null,
+      commonIP: commonIP.status === 'fulfilled' ? commonIP.value.ip : null,
+      commonMethod:
+        commonMethod.status === 'fulfilled' ? commonMethod.value.method : null,
+      statusCode:
+        statusCode.status === 'fulfilled' ? statusCode.value.statusCode : null,
+      commonBytes:
+        commonBytes.status === 'fulfilled' ? commonBytes.value.bytes : 0,
+      topUserAgent:
+        topUserAgent.status === 'fulfilled' ? topUserAgent.value.agent : null,
+    };
+
+    return response;
   }
 }

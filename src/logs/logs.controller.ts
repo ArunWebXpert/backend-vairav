@@ -49,6 +49,11 @@ export class LogsController {
     return await this.logsService.getTopUserAgent({ role: ROLE.ADMIN });
   }
 
+  @Get('stat')
+  async getStat() {
+    return await this.logsService.getStat({ role: ROLE.ADMIN });
+  }
+
   @Get('bar-chart-data')
   async getBarChartData(@Query() barChartInput: BarChartInput) {
     console.log(barChartInput);

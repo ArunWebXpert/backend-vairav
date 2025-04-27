@@ -79,6 +79,8 @@ export const LogsSchema = SchemaFactory.createForClass(Logs);
 //===================== Indexes for performance ===========================================
 LogsSchema.index({ ip: 1 });
 LogsSchema.index({ timestamp: -1 });
+LogsSchema.index({ source: 1 });
+
 LogsSchema.index({ 'address.country': 1 });
 LogsSchema.index({ 'address.city': 1 });
 LogsSchema.index({ 'address.region': 1 });

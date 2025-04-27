@@ -1,3 +1,4 @@
 export class ActiveIPResponse {
-  totalEvents: number;
+  ip: number | null;
+  count: number;
 }
