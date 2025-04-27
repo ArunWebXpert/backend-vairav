@@ -6,7 +6,7 @@ import { PaginationInput } from './pagination.input';
 export class LogTableDataInput extends PaginationInput {
   @IsOptional()
   @IsString()
-  search: string;
+  search?: string;
 
   @IsOptional()
   @Transform(({ value }: { value: string | undefined }) =>
