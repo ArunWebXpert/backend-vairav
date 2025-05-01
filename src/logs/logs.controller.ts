@@ -1,8 +1,10 @@
+import Lang from '@constants/language';
 import { ActiveIPResponse } from './dto/response/active-ip.response';
 import { BarChartInput } from './dto/input/bar-chart-input';
 import { Controller, Get, Post, Query } from '@nestjs/common';
 import { LogTableDataInput } from './dto/input/log-table-data.input';
 import { LogsService } from './service/logs.service';
+import { Public } from 'src/decorators/public.decorator';
 import { ROLE } from '@constants/enum/role.enum';
 import { SeedService } from './service/seed.service';
 import { TotalEventsResponse } from './dto/response/total-events.response';
@@ -14,9 +16,11 @@ export class LogsController {
     private readonly seedService: SeedService,
   ) {}
 
+  @Public()
   @Post('seed')
   async seedDB() {
-    return await this.seedService.processLogs();
+    await this.seedService.seedDB();
+    return { message: Lang.DB_SEED_SUCCESS };
   }
 
   @Get('total-events')

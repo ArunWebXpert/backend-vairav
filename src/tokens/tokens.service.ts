@@ -20,6 +20,10 @@ export class TokenService {
     };
   }
 
+  verifyAccessToken(token: string): IPayload {
+    return this.jwtService.verify(token);
+  }
+
   generateRefreshToken(payload: IPayload) {
     const refreshToken = this.jwtService.sign(payload, {
       secret: this.configService.get('JWT_REFRESH_TOKEN_SECRET'),

@@ -172,7 +172,7 @@ export class LogsService {
           },
         },
         { $sort: { _id: -1 } },
-        { $limit: 6 },
+        { $limit: 10 },
         {
           $project: {
             _id: 0,

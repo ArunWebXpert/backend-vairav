@@ -1,13 +1,14 @@
+import { APP_GUARD } from '@nestjs/core';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { AuthGuard } from './guard/auth.guard';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { Module } from '@nestjs/common';
-import { configValidationSchema } from './config/config.validation';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UsersModule } from './users/users.module';
-import { TokensModule } from './tokens/tokens.module';
 import { LogsModule } from './logs/logs.module';
-
+import { Module } from '@nestjs/common';
+import { MongooseModule } from '@nestjs/mongoose';
+import { TokensModule } from './tokens/tokens.module';
+import { UsersModule } from './users/users.module';
+import { configValidationSchema } from './config/config.validation';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -41,6 +42,12 @@ import { LogsModule } from './logs/logs.module';
     LogsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}

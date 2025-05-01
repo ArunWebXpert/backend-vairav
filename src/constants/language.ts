@@ -8,6 +8,7 @@ interface ResponseMessages {
   readonly USER_ALREADY_EXISTS: string;
   readonly USER_LOGIN_SUCCESS: string;
   readonly USER_REGISTER_SUCCESS: string;
+  readonly DB_SEED_SUCCESS: string;
 }
 
 const responseMessages = {
@@ -21,6 +22,7 @@ const responseMessages = {
     USER_ALREADY_EXISTS: 'User already exists.',
     USER_LOGIN_SUCCESS: 'User is logged in successfully',
     USER_REGISTER_SUCCESS: 'User is registered successfully',
+    DB_SEED_SUCCESS: 'DB seeded with sample data.',
   },
 } as const satisfies Record<string, ResponseMessages>;
 

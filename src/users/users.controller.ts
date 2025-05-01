@@ -5,7 +5,9 @@ import { MessageResponse } from './dto/response/message.response';
 import { RegisterUserInput } from './dto/input/register-user.input';
 import { UserService } from './service/users.service';
 import { LoginResponse } from './dto/response/login.user.response';
+import { Public } from 'src/decorators/public.decorator';
 
+@Public()
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
