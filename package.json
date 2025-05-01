@@ -32,6 +32,7 @@
     "dayjs": "^1.11.13",
     "dayjs-plugin-utc": "^0.1.2",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "maxmind": "^4.3.24",
     "mongoose": "^8.13.2",
     "reflect-metadata": "^0.2.2",

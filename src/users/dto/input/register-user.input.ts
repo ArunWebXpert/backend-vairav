@@ -1,5 +1,12 @@
 import MSG from 'src/constants/validation.message';
-import { IsEmail, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import {
+  IsEmail,
+  IsEnum,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
+} from 'class-validator';
+import { userRoles } from '@constants/enum/role.enum';
 
 export class RegisterUserInput {
   @MaxLength(255, { message: MSG.PROPERTY_MAX_LENGTH })
@@ -22,4 +29,8 @@ export class RegisterUserInput {
   @IsNotEmpty({ message: MSG.PROPERTY_REQUIRED })
   @IsString()
   password: string;
+
+  @IsEnum(userRoles, { message: MSG.ROLES_ENUM_REQUIRED })
+  @IsString()
+  role: string;
 }

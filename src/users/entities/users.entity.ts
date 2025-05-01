@@ -1,5 +1,6 @@
-import { HydratedDocument } from 'mongoose';
+import { userRoles } from '@constants/enum/role.enum';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { HydratedDocument } from 'mongoose';
 
 export type UserDocument = HydratedDocument<User>;
 
@@ -36,10 +37,17 @@ export class User {
     trim: true,
   })
   password: string;
+
+  @Prop({
+    type: String,
+    enum: userRoles,
+  })
+  role: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
 
+// remove password before converting to json
 UserSchema.set('toJSON', {
   transform: (doc, ret) => {
     delete ret.password;

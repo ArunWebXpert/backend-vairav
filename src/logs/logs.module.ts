@@ -5,6 +5,7 @@ import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { LogsController } from './logs.controller';
 import { SeedService } from './service/seed.service';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { SeedService } from './service/seed.service';
         schema: LogsSchema,
       },
     ]),
+    UsersModule,
   ],
   providers: [LogsService, LogsRepository, SeedService],
   controllers: [LogsController],

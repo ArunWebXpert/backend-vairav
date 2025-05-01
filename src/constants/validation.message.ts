@@ -14,6 +14,7 @@ interface IValidationErrorMessages {
   readonly PROPERTY_MUST_BE_UUID: string;
   readonly PROPERTY_REQUIRED: string;
   readonly PROPERTY_MUST_BE_EMAIL: string;
+  readonly ROLES_ENUM_REQUIRED: string;
 }
 
 const validationMessages: Record<string, IValidationErrorMessages> = {
@@ -35,6 +36,7 @@ const validationMessages: Record<string, IValidationErrorMessages> = {
     PROPERTY_MAX_VALUE: '$property must be maximum $constraint1.',
     PROPERTY_MUST_BE_UUID: 'The provided ID must be a valid UUID.',
     PROPERTY_MUST_BE_EMAIL: '$property must be a valid email.',
+    ROLES_ENUM_REQUIRED: 'Role should be either apache or nginx or all.',
   },
 };
 

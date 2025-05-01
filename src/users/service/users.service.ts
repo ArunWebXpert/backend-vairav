@@ -73,4 +73,14 @@ export class UserService {
       user,
     };
   }
+
+  async countUsers(): Promise<number> {
+    const usersCount = await this.userRepository.countDocuments();
+
+    return usersCount as number;
+  }
+
+  async findUserById(id: string): Promise<UserDocument> {
+    return (await this.userRepository.findById(id)) as UserDocument;
+  }
 }

@@ -1,5 +1,6 @@
 import Lang from '@constants/language';
 import {
+  ConflictException,
   Injectable,
   Logger,
   UnprocessableEntityException,
@@ -12,6 +13,7 @@ import * as readline from 'readline';
 import { convertToTimestamp } from 'src/utils/date.utils';
 import { Logs } from '../entities/logs.entity';
 import { LogsRepository } from '../repository/logs.repository';
+import { UserService } from 'src/users/service/users.service';
 
 @Injectable()
 export class SeedService {
@@ -26,6 +28,7 @@ export class SeedService {
 
   constructor(
     private readonly logsRepository: LogsRepository,
+    private readonly userService: UserService,
     @InjectConnection() private readonly connection: mongoose.Connection,
   ) {
     // this.initMaxmind();
@@ -99,13 +102,9 @@ export class SeedService {
         },
       };
 
-      console.log('here');
-
       const obj = {
         ip: ip ?? '',
-        // timestamp: new Date(match[4]),
         timestamp: convertToTimestamp(match[4]).toDate(),
-
         method: match[5] ?? '',
         url: match[6] ?? '',
         protocol: match[7] || 'HTTP/1.1',
@@ -131,9 +130,11 @@ export class SeedService {
 
   async processLogFile(filePath: string, source: string) {
     const batchSize = 1000;
+
     let batch: Logs[] = [];
 
     const fileStream = fs.createReadStream(filePath);
+
     const rl = readline.createInterface({
       input: fileStream,
       crlfDelay: Infinity,
@@ -142,7 +143,6 @@ export class SeedService {
     for await (const line of rl) {
       const parsed = this.parseLogLine(line, source);
 
-      console.log({ parsed });
       if (parsed) {
         batch.push(parsed);
       }
@@ -226,7 +226,44 @@ export class SeedService {
     this.logger.log('Retry completed and error log cleared');
   }
 
-  //   main seed  function
+  async seedUser() {
+    const userCount = await this.userService.countUsers();
+
+    if (userCount > 0) {
+      throw new ConflictException({ message: Lang.CLEAN_DB_BEFORE_SEEDING });
+    }
+
+    const userList = [
+      {
+        firstName: 'Arun',
+        lastName: 'Chapagain',
+        email: 'arun@gmail.com',
+        password: 'Arun@123',
+        role: 'admin',
+      },
+      {
+        firstName: 'Dipesh',
+        lastName: 'Gyawali',
+        email: 'dipesh@gmail.com',
+        password: 'Dipesh@123',
+        role: 'nginx',
+      },
+      {
+        firstName: 'Ujjwal',
+        lastName: 'Suwal',
+        email: 'ujjwal@gmail.com',
+        password: 'Ujjwal@123',
+        role: 'apache',
+      },
+    ];
+
+    await Promise.all(
+      userList.map(async (item) => {
+        return this.userService.registerUser(item);
+      }),
+    );
+  }
+
   async processLogs() {
     // find logs
     const logsCount = await this.logsRepository.countDocuments();
@@ -252,5 +289,11 @@ export class SeedService {
       this.logger.error(`Fatal error: ${err}`);
       throw err;
     }
+  }
+
+  //   main seed  function
+  async seedDB() {
+    await this.processLogs();
+    await this.seedUser();
   }
 }
